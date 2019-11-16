@@ -124,7 +124,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     #### conventionnelle :
     ```sql
-    -- JOINtures et tri
+    -- Jointures et tri
     SELECT personne.nom_pers AS nom, personne.prenom_pers AS prenom, quest_session.date_session AS "date"
     FROM personne
     INNER JOIN quest_session ON quest_session.no_pers = personne.no_pers
@@ -136,7 +136,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```
     #### compatible :
     ```sql
-    -- JOINtures et tri
+    -- Jointures et tri
     SELECT personne.nom_pers AS nom, personne.prenom_pers AS prenom, quest_session.date_session AS "date"
     FROM personne, quest_session, questionnaire, theme
     WHERE personne.no_pers = quest_session.no_pers
