@@ -93,7 +93,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     create table user_count as
     select count(*) c
     from personne;
-    -- on affiche le pourcentage
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     select quest_started.c/user_count.c percent
     from quest_started, user_count;
     -- on se débarrasse des tables temporaires
