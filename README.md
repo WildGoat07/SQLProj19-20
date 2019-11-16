@@ -36,6 +36,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```
 1. > *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
+    > **Note sur le sens de la consigne :**
+    > La "question 4" référence à la quatrième question du questionnaire, et la "session 12" correspond à son identifiant (qui peut ne pas provenir de Ric HOCHET, auquel cas rien n'est présent dans la table sélectionnée)
+    
     #### conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
