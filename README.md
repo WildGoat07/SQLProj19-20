@@ -8,7 +8,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
 
 ## requêtes :
 
-1. *Quelle(s) est (sont) la (les) bonne(s) réponse(s) à la question q3?*
+1. > *Quelle(s) est (sont) la (les) bonne(s) réponse(s) à la question q3?*
 
     #### conventionnelle :
     ```sql
@@ -28,7 +28,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     and question.no_question = 3
     and rep_proposee.no_question = question.no_question;
     ```
-1. *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
+1. > *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
     #### conventionnelle :
     ```sql
@@ -60,7 +60,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     and rep_donnee.no_session = quest_session.no_session
     and quest_session.no_pers = personne.no_pers;
     ```
-1. *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
+1. > *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
 
     #### conventionnelle :
     ```sql
