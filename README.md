@@ -154,17 +154,15 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     CREATE TABLE correct_count AS
     SELECT COUNT(*) AS c
     FROM rep_donnee
-    INNER JOIN question ON question.no_question = rep_donnee.no_question
     INNER JOIN rep_proposee ON rep_proposee.no_question = rep_donnee.no_question
     AND rep_proposee.no_ordre = rep_donnee.no_ordre
     WHERE rep_proposee.etat_rep = true
-    AND question.no_question = 2;
+    AND rep_donnee.no_question = 2;
     -- on créé une table qui contient le nombre de réponses total
     CREATE TABLE answer_count AS
     SELECT COUNT(*) AS c
     FROM rep_donnee
-    INNER JOIN question ON question.no_question = rep_donnee.no_question
-    WHERE question.no_question = 2;
+    WHERE rep_donnee.no_question = 2;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT correct_count.c / answer_count.c AS pourcentage
     FROM correct_count, answer_count;
@@ -176,18 +174,16 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- on créé une table qui contient le nombre de réponses justes
     CREATE TABLE correct_count AS
     SELECT COUNT(*) AS c
-    FROM rep_donnee, question, rep_donnee
+    FROM rep_donnee, rep_proposee
     WHERE rep_proposee.etat_rep = true
     AND question.no_question = 2
-    AND question.no_question = rep_donnee.no_question
     AND rep_proposee.no_question = rep_donnee.no_question
     AND rep_proposee.no_ordre = rep_donnee.no_ordre;
     -- on créé une table qui contient le nombre de réponses total
     CREATE TABLE answer_count AS
     SELECT COUNT(*) AS c
-    FROM rep_donnee, question
-    WHERE question.no_question = 2
-    AND question.no_question = rep_donnee.no_question;
+    FROM rep_donnee
+    WHERE rep_donnee.no_question = 2;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT correct_count.c / answer_count.c AS pourcentage
     FROM correct_count, answer_count;
