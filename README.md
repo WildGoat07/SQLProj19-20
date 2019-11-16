@@ -95,7 +95,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     SELECT COUNT(*) AS c
     FROM personne;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT quest_started.c/user_count.c pourcentage
+    SELECT quest_started.c / user_count.c pourcentage
     FROM quest_started, user_count;
     -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
@@ -114,7 +114,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     SELECT COUNT(*) c
     FROM personne;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT quest_started.c/user_count.c percent
+    SELECT quest_started.c / user_count.c percent
     FROM quest_started, user_count;
     -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
@@ -166,7 +166,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     INNER JOIN question ON question.no_question = rep_donnee.no_question
     WHERE question.no_question = 2;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT correct_count.c/answer_count.c AS pourcentage
+    SELECT correct_count.c / answer_count.c AS pourcentage
     FROM correct_count, answer_count;
     DROP TABLE correct_count;
     DROP TABLE answer_count;
@@ -189,7 +189,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     WHERE question.no_question = 2
     AND question.no_question = rep_donnee.no_question;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT correct_count.c/answer_count.c AS pourcentage
+    SELECT correct_count.c / answer_count.c AS pourcentage
     FROM correct_count, answer_count;
     DROP TABLE correct_count;
     DROP TABLE answer_count;
