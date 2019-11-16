@@ -146,7 +146,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     AND quest_session.date_session LIKE "2018-%"
     ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
-1. > *- Quel est le pourcentage de réponses correctes à la question q2?*
+1. > *Quel est le pourcentage de réponses correctes à la question q2?*
 
     #### conventionnelle :
     ```sql
