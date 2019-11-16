@@ -50,25 +50,31 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     and rep_proposee.no_ordre = rep_donnee.no_ordre
     inner join quest_session on rep_donnee.no_session = quest_session.no_session
     inner join personne on quest_session.no_pers = personne.no_pers
+    inner join se_compose on se_compose.no_question = rep_proposee.no_question
+    and se_compose.no_quest = quest_session.no_quest
     where quest_session.no_session = 12
     and nom_pers = lower("HOCHET")
     and prenom_pers = lower("Ric")
-    and question.no_question = 4;
+    -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+    and se_compose.no_ordre = 3;    
     ```
     #### compatible :
     ```sql
     -- jonctions multiples et des conditions
     select libelle, lib_reponse, etat_rep
-    from rep_proposee, question, rep_donnee, quest_session, personne
+    from rep_proposee, question, rep_donnee, quest_session, personne, se_compose
     where quest_session.no_session = 12
     and nom_pers = "hochet"
     and prenom_pers = "ric"
-    and question.no_question = 4
+       -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+    and se_compose.no_ordre = 3
     and question.no_question = rep_proposee.no_question
     and rep_donnee.no_question = question.no_question
     and rep_proposee.no_ordre = rep_donnee.no_ordre
     and rep_donnee.no_session = quest_session.no_session
-    and quest_session.no_pers = personne.no_pers;
+    and quest_session.no_pers = personne.no_pers
+    and se_compose.no_quest = quest_session.no_quest
+    and se_compose.no_question = question.no_question;
     ```
 1. > *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
 
