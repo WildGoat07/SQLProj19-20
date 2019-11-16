@@ -100,3 +100,29 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     drop table quest_started;
     drop table user_count;
     ```
+1. > *Donner, classées par date de session décroissante et par ordre alphabétique, les personnes qui ont répondu en 2018 à des questionnaires sur le sport*
+
+    #### conventionnelle :
+    ```sql
+    -- jointures et tri
+    select nom_pers, prenom_pers, date_session
+    from personne
+    inner join quest_session on quest_session.no_pers = personne.no_pers
+    inner join questionnaire on quest_session.no_quest = questionnaire.no_quest
+    inner join theme on questionnaire.no_theme = theme.no_theme
+    where theme.libelle_theme = "sport"
+    and year(date_session) = 2018
+    order by date_session desc, nom_pers, prenom_pers;
+    ```
+    #### compatible :
+    ```sql
+    -- jointures et tri
+    select nom_pers, prenom_pers, date_session
+    from personne, quest_session, questionnaire, theme
+    where personne.no_pers = quest_session.no_pers
+    and questionnaire.no_quest = quest_session.no_quest
+    and theme.no_theme = questionnaire.no_theme
+    and theme.libelle_theme = "sport"
+    and year(date_session) = 2018
+    order by date_session desc, nom_pers, prenom_pers;
+    ```
