@@ -33,7 +33,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     #### conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
-    select lib_reponse
+    select libelle, lib_reponse,
+    case
+        when etat_rep = 1 then "vrai"
+        else "faux"
+    end as etat_rep
     from rep_proposee
     inner join question on question.no_question = rep_proposee.no_question
     inner join rep_donnee on rep_donnee.no_question = question.no_question
@@ -48,11 +52,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     #### compatible :
     ```sql
     -- jonctions multiples et des conditions
-    select lib_reponse
+    select libelle, lib_reponse, etat_rep
     from rep_proposee, question, rep_donnee, quest_session, personne
     where quest_session.no_session = 12
-    and nom_pers = lower("HOCHET")
-    and prenom_pers = lower("Ric")
+    and nom_pers = "hochet"
+    and prenom_pers = "ric"
     and question.no_question = 4
     and question.no_question = rep_proposee.no_question
     and rep_donnee.no_question = question.no_question
