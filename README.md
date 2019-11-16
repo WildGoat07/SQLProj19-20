@@ -10,7 +10,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
 
 1. *Quelle(s) est (sont) la (les) bonne(s) réponse(s) à la question q3?*
 
-    conventionnelle :
+    #### conventionnelle :
     ```sql
     -- simple jonction entre deux tables
     select lib_reponse
@@ -19,7 +19,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     where etat_rep = true
     and question.no_question = 3;
     ```
-    compatible :
+    #### compatible :
     ```sql
     -- simple jonction entre deux tables
     select lib_reponse
@@ -30,7 +30,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     ```
 1. *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
-    conventionnelle :
+    #### conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
     select lib_reponse
@@ -45,7 +45,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     and prenom_pers = lower("Ric")
     and question.no_question = 4;
     ```
-    compatible :
+    #### compatible :
     ```sql
     -- jonctions multiples et des conditions
     select lib_reponse
@@ -62,7 +62,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     ```
 1. *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
 
-    conventionnelle :
+    #### conventionnelle :
     ```sql
     -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
     create table quest_started as
@@ -81,7 +81,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     drop table quest_started;
     drop table user_count;
     ```
-    compatible :
+    #### compatible :
     ```sql
     -- on crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
     create table quest_started as
