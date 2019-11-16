@@ -38,7 +38,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur le sens de la consigne :**
     >
-    > La "question 4" référence à la quatrième question du questionnaire, et la "session 12" correspond à son identifiant (qui peut ne pas provenir de Ric HOCHET, auquel cas rien n'est présent dans la table sélectionnée)
+    > La "question 4" fait référence à la quatrième question du questionnaire, et la "session 12" correspond à son identifiant (qui peut ne pas provenir de Ric HOCHET, auquel cas rien n'est présent dans la table sélectionnée)
     
     #### conventionnelle :
     ```sql
