@@ -146,3 +146,51 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     AND quest_session.date_session LIKE "2018-%"
     ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
+1. > *- Quel est le pourcentage de réponses correctes à la question q2?*
+
+    #### conventionnelle :
+    ```sql
+    -- on créé une table qui contient le nombre de réponses justes
+    CREATE TABLE correct_count AS
+    SELECT COUNT(*) AS c
+    FROM rep_donnee
+    INNER JOIN question ON question.no_question = rep_donnee.no_question
+    INNER JOIN rep_proposee ON rep_proposee.no_question = rep_donnee.no_question
+    AND rep_proposee.no_ordre = rep_donnee.no_ordre
+    WHERE rep_proposee.etat_rep = true
+    AND question.no_question = 2;
+    -- on créé une table qui contient le nombre de réponses total
+    CREATE TABLE answer_count AS
+    SELECT COUNT(*) AS c
+    FROM rep_donnee
+    INNER JOIN question ON question.no_question = rep_donnee.no_question
+    WHERE question.no_question = 2;
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT correct_count.c/answer_count.c AS pourcentage
+    FROM correct_count, answer_count;
+    DROP TABLE correct_count;
+    DROP TABLE answer_count;
+    ```
+    #### compatible :
+    ```sql
+    -- on créé une table qui contient le nombre de réponses justes
+    CREATE TABLE correct_count AS
+    SELECT COUNT(*) AS c
+    FROM rep_donnee, question, rep_donnee
+    WHERE rep_proposee.etat_rep = true
+    AND question.no_question = 2
+    AND question.no_question = rep_donnee.no_question
+    AND rep_proposee.no_question = rep_donnee.no_question
+    AND rep_proposee.no_ordre = rep_donnee.no_ordre;
+    -- on créé une table qui contient le nombre de réponses total
+    CREATE TABLE answer_count AS
+    SELECT COUNT(*) AS c
+    FROM rep_donnee, question
+    WHERE question.no_question = 2
+    AND question.no_question = rep_donnee.no_question;
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT correct_count.c/answer_count.c AS pourcentage
+    FROM correct_count, answer_count;
+    DROP TABLE correct_count;
+    DROP TABLE answer_count;
+    ```
