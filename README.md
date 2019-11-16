@@ -143,6 +143,6 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     AND questionnaire.no_quest = quest_session.no_quest
     AND theme.no_theme = questionnaire.no_theme
     AND theme.libelle_theme = "sport"
-    AND YEAR(quest_session.date_session) = 2018
+    AND quest_session.date_session LIKE "2018-%"
     ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
