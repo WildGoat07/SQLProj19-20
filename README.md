@@ -19,20 +19,20 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- simple jonction entre deux tables
-    select rep_proposee.lib_reponse as reponse
-    from rep_proposee
-    inner join question on rep_proposee.no_question = question.no_question
-    where rep_proposee.etat_rep = true
-    and question.no_question = 3;
+    SELECT rep_proposee.lib_reponse AS reponse
+    FROM rep_proposee
+    INNER JOIN question ON rep_proposee.no_question = question.no_question
+    WHERE rep_proposee.etat_rep = true
+    AND question.no_question = 3;
     ```
     #### compatible :
     ```sql
     -- simple jonction entre deux tables
-    select rep_proposee.lib_reponse as reponse
-    from rep_proposee, question
-    where rep_proposee.etat_rep = true
-    and question.no_question = 3
-    and rep_proposee.no_question = question.no_question;
+    SELECT rep_proposee.lib_reponse AS reponse
+    FROM rep_proposee, question
+    WHERE rep_proposee.etat_rep = true
+    AND question.no_question = 3
+    AND rep_proposee.no_question = question.no_question;
     ```
 1. > *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
@@ -43,106 +43,106 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
-    select question.libelle as question, rep_proposee.lib_reponse as reponse,
-    case
-        when rep_proposee.etat_rep = true then "vrai"
-        else "faux"
-    end as etat
-    from rep_proposee
-    inner join question on question.no_question = rep_proposee.no_question
-    inner join rep_donnee on rep_donnee.no_question = question.no_question
-    and rep_proposee.no_ordre = rep_donnee.no_ordre
-    inner join quest_session on rep_donnee.no_session = quest_session.no_session
-    inner join personne on quest_session.no_pers = personne.no_pers
-    inner join se_compose on se_compose.no_question = rep_proposee.no_question
-    and se_compose.no_quest = quest_session.no_quest
-    where quest_session.no_session = 12
-    and personne.nom_pers = lower("HOCHET")
-    and personne.prenom_pers = lower("Ric")
-    -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
-    and se_compose.no_ordre = 3;    
+    SELECT question.libelle AS question, rep_proposee.lib_reponse AS reponse,
+    CASE
+        WHEN rep_proposee.etat_rep = true THEN "vrai"
+        ELSE "faux"
+    END AS etat
+    FROM rep_proposee
+    INNER JOIN question ON question.no_question = rep_proposee.no_question
+    INNER JOIN rep_donnee ON rep_donnee.no_question = question.no_question
+    AND rep_proposee.no_ordre = rep_donnee.no_ordre
+    INNER JOIN quest_session ON rep_donnee.no_session = quest_session.no_session
+    INNER JOIN personne ON quest_session.no_pers = personne.no_pers
+    INNER JOIN se_compose ON se_compose.no_question = rep_proposee.no_question
+    AND se_compose.no_quest = quest_session.no_quest
+    WHERE quest_session.no_session = 12
+    AND personne.nom_pers = lower("HOCHET")
+    AND personne.prenom_pers = lower("Ric")
+    -- ON mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+    AND se_compose.no_ordre = 3;    
     ```
     #### compatible :
     ```sql
     -- jonctions multiples et des conditions
-    select question.libelle as question, rep_proposee.lib_reponse as reponse, rep_proposee.etat_rep as etat
-    from rep_proposee, question, rep_donnee, quest_session, personne, se_compose
-    where quest_session.no_session = 12
-    and personne.nom_pers = "hochet"
-    and personne.prenom_pers = "ric"
-       -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
-    and se_compose.no_ordre = 3
-    and question.no_question = rep_proposee.no_question
-    and rep_donnee.no_question = question.no_question
-    and rep_proposee.no_ordre = rep_donnee.no_ordre
-    and rep_donnee.no_session = quest_session.no_session
-    and quest_session.no_pers = personne.no_pers
-    and se_compose.no_quest = quest_session.no_quest
-    and se_compose.no_question = question.no_question;
+    SELECT question.libelle AS question, rep_proposee.lib_reponse AS reponse, rep_proposee.etat_rep AS etat
+    FROM rep_proposee, question, rep_donnee, quest_session, personne, se_compose
+    WHERE quest_session.no_session = 12
+    AND personne.nom_pers = "hochet"
+    AND personne.prenom_pers = "ric"
+       -- ON mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+    AND se_compose.no_ordre = 3
+    AND question.no_question = rep_proposee.no_question
+    AND rep_donnee.no_question = question.no_question
+    AND rep_proposee.no_ordre = rep_donnee.no_ordre
+    AND rep_donnee.no_session = quest_session.no_session
+    AND quest_session.no_pers = personne.no_pers
+    AND se_compose.no_quest = quest_session.no_quest
+    AND se_compose.no_question = question.no_question;
     ```
 1. > *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
 
     #### conventionnelle :
     ```sql
-    -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
-    create table quest_started as
-    select count(distinct quest_session.no_pers) as c
-    from quest_session
-    group by quest_session.no_pers, quest_session.no_quest
-    having count(quest_session.no_quest) >= 2;
-    -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
-    create table user_count as
-    select count(*) as c
-    from personne;
-    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    select quest_started.c/user_count.c pourcentage
-    from quest_started, user_count;
-    -- on se débarrasse des tables temporaires
-    drop table quest_started;
-    drop table user_count;
+    -- ON crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
+    CREATE TABLE quest_started AS
+    SELECT count(DISTINCT quest_session.no_pers) AS c
+    FROM quest_session
+    GROUP BY quest_session.no_pers, quest_session.no_quest
+    HAVING count(quest_session.no_quest) >= 2;
+    -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
+    CREATE TABLE user_count AS
+    SELECT count(*) AS c
+    FROM personne;
+    -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT quest_started.c/user_count.c pourcentage
+    FROM quest_started, user_count;
+    -- ON se débarrasse des tables temporaires
+    DROP TABLE quest_started;
+    DROP TABLE user_count;
     ```
     #### compatible :
     ```sql
-    -- on crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
-    create table quest_started as
-    select count(distinct qs1.no_pers) c
-    from quest_session as qs1, quest_session as qs2
-    where qs1.no_pers = qs2.no_pers
-    and qs1.no_quest <> qs2.no_quest;
-    -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
-    create table user_count as
-    select count(*) c
-    from personne;
-    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    select quest_started.c/user_count.c percent
-    from quest_started, user_count;
-    -- on se débarrasse des tables temporaires
-    drop table quest_started;
-    drop table user_count;
+    -- ON crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
+    CREATE TABLE quest_started AS
+    SELECT count(DISTINCT qs1.no_pers) c
+    FROM quest_session AS qs1, quest_session AS qs2
+    WHERE qs1.no_pers = qs2.no_pers
+    AND qs1.no_quest <> qs2.no_quest;
+    -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
+    CREATE TABLE user_count AS
+    SELECT count(*) c
+    FROM personne;
+    -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT quest_started.c/user_count.c percent
+    FROM quest_started, user_count;
+    -- ON se débarrasse des tables temporaires
+    DROP TABLE quest_started;
+    DROP TABLE user_count;
     ```
 1. > *Donner, classées par date de session décroissante et par ordre alphabétique, les personnes qui ont répondu en 2018 à des questionnaires sur le sport*
 
     #### conventionnelle :
     ```sql
-    -- jointures et tri
-    select personne.nom_pers as nom, personne.prenom_pers as prenom, quest_session.date_session as "date"
-    from personne
-    inner join quest_session on quest_session.no_pers = personne.no_pers
-    inner join questionnaire on quest_session.no_quest = questionnaire.no_quest
-    inner join theme on questionnaire.no_theme = theme.no_theme
-    where theme.libelle_theme = "sport"
-    and year(quest_session.date_session) = 2018
-    order by quest_session.date_session desc, personne.nom_pers, personne.prenom_pers;
+    -- JOINtures et tri
+    SELECT personne.nom_pers AS nom, personne.prenom_pers AS prenom, quest_session.date_session AS "date"
+    FROM personne
+    INNER JOIN quest_session ON quest_session.no_pers = personne.no_pers
+    INNER JOIN questionnaire ON quest_session.no_quest = questionnaire.no_quest
+    INNER JOIN theme ON questionnaire.no_theme = theme.no_theme
+    WHERE theme.libelle_theme = "sport"
+    AND year(quest_session.date_session) = 2018
+    ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
     #### compatible :
     ```sql
-    -- jointures et tri
-    select personne.nom_pers as nom, personne.prenom_pers as prenom, quest_session.date_session as "date"
-    from personne, quest_session, questionnaire, theme
-    where personne.no_pers = quest_session.no_pers
-    and questionnaire.no_quest = quest_session.no_quest
-    and theme.no_theme = questionnaire.no_theme
-    and theme.libelle_theme = "sport"
-    and year(quest_session.date_session) = 2018
-    order by quest_session.date_session desc, personne.nom_pers, personne.prenom_pers;
+    -- JOINtures et tri
+    SELECT personne.nom_pers AS nom, personne.prenom_pers AS prenom, quest_session.date_session AS "date"
+    FROM personne, quest_session, questionnaire, theme
+    WHERE personne.no_pers = quest_session.no_pers
+    AND questionnaire.no_quest = quest_session.no_quest
+    AND theme.no_theme = questionnaire.no_theme
+    AND theme.libelle_theme = "sport"
+    AND year(quest_session.date_session) = 2018
+    ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
