@@ -22,7 +22,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     select lib_reponse
     from rep_proposee
     inner join question on rep_proposee.no_question = question.no_question
-    where etat_rep = true
+    where rep_proposee.etat_rep = true
     and question.no_question = 3;
     ```
     #### compatible :
@@ -30,7 +30,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- simple jonction entre deux tables
     select lib_reponse
     from rep_proposee, question
-    where etat_rep = true
+    where rep_proposee.etat_rep = true
     and question.no_question = 3
     and rep_proposee.no_question = question.no_question;
     ```
@@ -57,8 +57,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     inner join se_compose on se_compose.no_question = rep_proposee.no_question
     and se_compose.no_quest = quest_session.no_quest
     where quest_session.no_session = 12
-    and nom_pers = lower("HOCHET")
-    and prenom_pers = lower("Ric")
+    and personne.nom_pers = lower("HOCHET")
+    and personne.prenom_pers = lower("Ric")
     -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
     and se_compose.no_ordre = 3;    
     ```
@@ -68,8 +68,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     select libelle, lib_reponse, etat_rep
     from rep_proposee, question, rep_donnee, quest_session, personne, se_compose
     where quest_session.no_session = 12
-    and nom_pers = "hochet"
-    and prenom_pers = "ric"
+    and personne.nom_pers = "hochet"
+    and personne.prenom_pers = "ric"
        -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
     and se_compose.no_ordre = 3
     and question.no_question = rep_proposee.no_question
@@ -86,10 +86,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
     create table quest_started as
-    select count(distinct no_pers) as c
+    select count(distinct quest_session.no_pers) as c
     from quest_session
-    group by no_pers, no_quest
-    having count(no_quest) >= 2;
+    group by quest_session.no_pers, quest_session.no_quest
+    having count(quest_session.no_quest) >= 2;
     -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     create table user_count as
     select count(*) as c
@@ -125,24 +125,24 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- jointures et tri
-    select nom_pers, prenom_pers, date_session
+    select personne.nom_pers, personne.prenom_pers, quest_session.date_session
     from personne
     inner join quest_session on quest_session.no_pers = personne.no_pers
     inner join questionnaire on quest_session.no_quest = questionnaire.no_quest
     inner join theme on questionnaire.no_theme = theme.no_theme
     where theme.libelle_theme = "sport"
-    and year(date_session) = 2018
-    order by date_session desc, nom_pers, prenom_pers;
+    and year(quest_session.date_session) = 2018
+    order by quest_session.date_session desc, personne.nom_pers, personne.prenom_pers;
     ```
     #### compatible :
     ```sql
     -- jointures et tri
-    select nom_pers, prenom_pers, date_session
+    select personne.nom_pers, personne.prenom_pers, quest_session.date_session
     from personne, quest_session, questionnaire, theme
     where personne.no_pers = quest_session.no_pers
     and questionnaire.no_quest = quest_session.no_quest
     and theme.no_theme = questionnaire.no_theme
     and theme.libelle_theme = "sport"
-    and year(date_session) = 2018
-    order by date_session desc, nom_pers, prenom_pers;
+    and year(quest_session.date_session) = 2018
+    order by quest_session.date_session desc, personne.nom_pers, personne.prenom_pers;
     ```
