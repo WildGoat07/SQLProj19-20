@@ -8,7 +8,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
 
 ## requêtes :
 
-1. conventionnelle :
+1. *Quelle(s) est (sont) la (les) bonne(s) réponse(s) à la question q3?*
+
+    conventionnelle :
     ```sql
     -- simple jonction entre deux tables
     select lib_reponse
@@ -26,7 +28,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     and question.no_question = 3
     and rep_proposee.no_question = question.no_question;
     ```
-1. conventionnelle :
+1. *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
+
+    conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
     select lib_reponse
@@ -56,7 +60,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours) et d'u
     and rep_donnee.no_session = quest_session.no_session
     and quest_session.no_pers = personne.no_pers;
     ```
-1. conventionnelle :
+1. *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
+
+    conventionnelle :
     ```sql
     -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
     create table quest_started as
