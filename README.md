@@ -19,7 +19,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- simple jonction entre deux tables
-    select lib_reponse
+    select rep_proposee.lib_reponse as reponse
     from rep_proposee
     inner join question on rep_proposee.no_question = question.no_question
     where rep_proposee.etat_rep = true
@@ -28,7 +28,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### compatible :
     ```sql
     -- simple jonction entre deux tables
-    select lib_reponse
+    select rep_proposee.lib_reponse as reponse
     from rep_proposee, question
     where rep_proposee.etat_rep = true
     and question.no_question = 3
@@ -43,11 +43,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- jonctions multiples et des conditions
-    select libelle, lib_reponse,
+    select question.libelle as question, rep_proposee.lib_reponse as reponse,
     case
-        when etat_rep = true then "vrai"
+        when rep_proposee.etat_rep = true then "vrai"
         else "faux"
-    end as etat_rep
+    end as etat
     from rep_proposee
     inner join question on question.no_question = rep_proposee.no_question
     inner join rep_donnee on rep_donnee.no_question = question.no_question
@@ -65,7 +65,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### compatible :
     ```sql
     -- jonctions multiples et des conditions
-    select libelle, lib_reponse, etat_rep
+    select question.libelle as question, rep_proposee.lib_reponse as reponse, rep_proposee.etat_rep as etat
     from rep_proposee, question, rep_donnee, quest_session, personne, se_compose
     where quest_session.no_session = 12
     and personne.nom_pers = "hochet"
@@ -106,7 +106,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- on crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
     create table quest_started as
     select count(distinct qs1.no_pers) c
-    from quest_session qs1, quest_session qs2
+    from quest_session as qs1, quest_session as qs2
     where qs1.no_pers = qs2.no_pers
     and qs1.no_quest <> qs2.no_quest;
     -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
@@ -125,7 +125,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     -- jointures et tri
-    select personne.nom_pers, personne.prenom_pers, quest_session.date_session
+    select personne.nom_pers as nom, personne.prenom_pers as prenom, quest_session.date_session as "date"
     from personne
     inner join quest_session on quest_session.no_pers = personne.no_pers
     inner join questionnaire on quest_session.no_quest = questionnaire.no_quest
@@ -137,7 +137,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### compatible :
     ```sql
     -- jointures et tri
-    select personne.nom_pers, personne.prenom_pers, quest_session.date_session
+    select personne.nom_pers as nom, personne.prenom_pers as prenom, quest_session.date_session as "date"
     from personne, quest_session, questionnaire, theme
     where personne.no_pers = quest_session.no_pers
     and questionnaire.no_quest = quest_session.no_quest
