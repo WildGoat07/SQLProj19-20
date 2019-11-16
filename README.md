@@ -1,6 +1,12 @@
 <!---
+______________________________________________________________________________
+
+/!\
+/!\
 Un aperçu du markdown est disponible à cette adresse :
 https://github.com/WildGoat07/SQLProj19-20/blob/master/README.md
+
+______________________________________________________________________________
 -->
 # Projet SQL 2019 - 2020
 
