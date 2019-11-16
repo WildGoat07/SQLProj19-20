@@ -190,3 +190,39 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE correct_count;
     DROP TABLE answer_count;
     ```
+1. > *Quel est le pourcentage de non-réponses à la question q2?*
+
+    #### conventionnelle :
+    ```sql
+    -- on créé une table qui contient, pour chaque session, sa réponse associée
+    -- on se servira du fait que COUNT() ne prenne pas en compte les NULL pour compter les non-réponses
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT 1 - (COUNT(rep_donnee.no_session) / COUNT(quest_session.no_session)) AS pourcentage
+    FROM quest_session
+    LEFT JOIN rep_donnee ON rep_donnee.no_session = quest_session.no_session
+    -- dans cet exemple : uniquement compatible avec MySQL, utiliser :
+    -- ISNULL(rep_donnee.no_question, 2) avec SQL Server,
+    -- IIF(IsNull(rep_donnee.no_question), 2, rep_donnee.no_question) avec MS Access
+    -- ou NVL(rep_donnee.no_question, 2) avec Oracle.
+    -- Comme on veut inclure les réponses "absentes", il faut inclure les NULL avec
+    WHERE IFNULL(rep_donnee.no_question, 2) = 2;
+    ```
+    #### compatible :
+    ```sql
+    -- on commence par créer une table comptant le nombre de sessions contenant la question... EN QUESTION :DDD *badum tsss*
+    CREATE TABLE question_instances_count
+    SELECT COUNT(*) AS c
+    FROM quest_session, se_compose
+    WHERE se_compose.no_quest = quest_session.no_quest
+    AND se_compose.no_question = 2;
+    -- puis on créé une table comptant le nombre de réponses à cette question
+    CREATE TABLE answers_count
+    SELECT COUNT(*) AS c
+    FROM rep_donnee
+    WHERE rep_donnee.no_question = 2;
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    SELECT 1 - (answers_count.c / question_instances_count.c) AS pourcentage
+    FROM answers_count, question_instances_count;
+    DROP TABLE question_instances_count;
+    DROP TABLE answers_count;
+    ```
