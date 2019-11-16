@@ -41,7 +41,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- jonctions multiples et des conditions
     select libelle, lib_reponse,
     case
-        when etat_rep = 1 then "vrai"
+        when etat_rep = true then "vrai"
         else "faux"
     end as etat_rep
     from rep_proposee
