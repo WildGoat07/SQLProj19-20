@@ -2,7 +2,7 @@
 Un aperçu du markdown est disponible à cette adresse :
 https://github.com/WildGoat07/SQLProj19-20/blob/master/README.md
 -->
-# SQL Project 2019 - 2020
+# Projet SQL 2019 - 2020
 
 Chaque requête est écrite de manière compatible (par rapport au cours) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours.
 
