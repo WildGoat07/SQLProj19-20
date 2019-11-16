@@ -59,7 +59,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     WHERE quest_session.no_session = 12
     AND personne.nom_pers = LOWER("HOCHET")
     AND personne.prenom_pers = LOWER("Ric")
-    -- ON mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+    -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
     AND se_compose.no_ordre = 3;    
     ```
     #### compatible :
@@ -70,7 +70,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     WHERE quest_session.no_session = 12
     AND personne.nom_pers = "hochet"
     AND personne.prenom_pers = "ric"
-       -- ON mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
+       -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
     AND se_compose.no_ordre = 3
     AND question.no_question = rep_proposee.no_question
     AND rep_donnee.no_question = question.no_question
@@ -84,39 +84,39 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     #### conventionnelle :
     ```sql
-    -- ON crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
+    -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
     CREATE TABLE quest_started AS
     SELECT COUNT(DISTINCT quest_session.no_pers) AS c
     FROM quest_session
     GROUP BY quest_session.no_pers, quest_session.no_quest
     HAVING COUNT(quest_session.no_quest) >= 2;
-    -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
+    -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS
     SELECT COUNT(*) AS c
     FROM personne;
-    -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT quest_started.c/user_count.c pourcentage
     FROM quest_started, user_count;
-    -- ON se débarrasse des tables temporaires
+    -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
     DROP TABLE user_count;
     ```
     #### compatible :
     ```sql
-    -- ON crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
+    -- on crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
     CREATE TABLE quest_started AS
     SELECT COUNT(DISTINCT qs1.no_pers) c
     FROM quest_session AS qs1, quest_session AS qs2
     WHERE qs1.no_pers = qs2.no_pers
     AND qs1.no_quest <> qs2.no_quest;
-    -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
+    -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS
     SELECT COUNT(*) c
     FROM personne;
-    -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT quest_started.c/user_count.c percent
     FROM quest_started, user_count;
-    -- ON se débarrasse des tables temporaires
+    -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
     DROP TABLE user_count;
     ```
