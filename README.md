@@ -4,7 +4,7 @@ https://github.com/WildGoat07/SQLProj19-20/blob/master/README.md
 -->
 # Projet SQL 2019 - 2020
 
-Chaque requête est écrite de manière compatible (par rapport au cours) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours.
+Chaque requête est écrite de manière compatible (par rapport au cours et au design d'un arbre) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours.
 
 ## requêtes :
 
