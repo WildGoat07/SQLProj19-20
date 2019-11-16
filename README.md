@@ -95,7 +95,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     SELECT COUNT(*) AS c
     FROM personne;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT quest_started.c / user_count.c pourcentage
+    SELECT quest_started.c / user_count.c AS pourcentage
     FROM quest_started, user_count;
     -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
@@ -105,16 +105,16 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- on crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
     CREATE TABLE quest_started AS
-    SELECT COUNT(DISTINCT qs1.no_pers) c
+    SELECT COUNT(DISTINCT qs1.no_pers) AS c
     FROM quest_session AS qs1, quest_session AS qs2
     WHERE qs1.no_pers = qs2.no_pers
     AND qs1.no_quest <> qs2.no_quest;
     -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS
-    SELECT COUNT(*) c
+    SELECT COUNT(*) AS c
     FROM personne;
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT quest_started.c / user_count.c percent
+    SELECT quest_started.c / user_count.c AS pourcentage
     FROM quest_started, user_count;
     -- on se débarrasse des tables temporaires
     DROP TABLE quest_started;
