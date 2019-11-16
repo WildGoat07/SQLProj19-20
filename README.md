@@ -57,8 +57,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     INNER JOIN se_compose ON se_compose.no_question = rep_proposee.no_question
     AND se_compose.no_quest = quest_session.no_quest
     WHERE quest_session.no_session = 12
-    AND personne.nom_pers = lower("HOCHET")
-    AND personne.prenom_pers = lower("Ric")
+    AND personne.nom_pers = LOWER("HOCHET")
+    AND personne.prenom_pers = LOWER("Ric")
     -- ON mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
     AND se_compose.no_ordre = 3;    
     ```
@@ -86,13 +86,13 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- ON crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
     CREATE TABLE quest_started AS
-    SELECT count(DISTINCT quest_session.no_pers) AS c
+    SELECT COUNT(DISTINCT quest_session.no_pers) AS c
     FROM quest_session
     GROUP BY quest_session.no_pers, quest_session.no_quest
-    HAVING count(quest_session.no_quest) >= 2;
+    HAVING COUNT(quest_session.no_quest) >= 2;
     -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS
-    SELECT count(*) AS c
+    SELECT COUNT(*) AS c
     FROM personne;
     -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT quest_started.c/user_count.c pourcentage
@@ -105,13 +105,13 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- ON crée une table qui contient une seule case (colonne 'c') contenant le nombre d'utilisateurs ayant démarré un même questionnaire plusieurs fois
     CREATE TABLE quest_started AS
-    SELECT count(DISTINCT qs1.no_pers) c
+    SELECT COUNT(DISTINCT qs1.no_pers) c
     FROM quest_session AS qs1, quest_session AS qs2
     WHERE qs1.no_pers = qs2.no_pers
     AND qs1.no_quest <> qs2.no_quest;
     -- ON crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS
-    SELECT count(*) c
+    SELECT COUNT(*) c
     FROM personne;
     -- ON renvoie le pourcentage (et ON ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT quest_started.c/user_count.c percent
@@ -131,7 +131,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     INNER JOIN questionnaire ON quest_session.no_quest = questionnaire.no_quest
     INNER JOIN theme ON questionnaire.no_theme = theme.no_theme
     WHERE theme.libelle_theme = "sport"
-    AND year(quest_session.date_session) = 2018
+    AND YEAR(quest_session.date_session) = 2018
     ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
     #### compatible :
@@ -143,6 +143,6 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     AND questionnaire.no_quest = quest_session.no_quest
     AND theme.no_theme = questionnaire.no_theme
     AND theme.libelle_theme = "sport"
-    AND year(quest_session.date_session) = 2018
+    AND YEAR(quest_session.date_session) = 2018
     ORDER BY quest_session.date_session DESC, personne.nom_pers, personne.prenom_pers;
     ```
