@@ -84,22 +84,17 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     #### conventionnelle :
     ```sql
-    -- on crée une table contenant une seule case (colonne 'c') donnant le nombre d’utilisateurs différents ayant lancé minimum 2 fois un même questionnaire
-    CREATE TABLE quest_started AS
-    SELECT COUNT(DISTINCT quest_session.no_pers) AS c
-    FROM quest_session
-    GROUP BY quest_session.no_pers, quest_session.no_quest
-    HAVING COUNT(quest_session.no_quest) >= 2;
-    -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
-    CREATE TABLE user_count AS
-    SELECT COUNT(*) AS c
-    FROM personne;
+    SELECT
     -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT quest_started.c / user_count.c AS pourcentage
-    FROM quest_started, user_count;
-    -- on se débarrasse des tables temporaires
-    DROP TABLE quest_started;
-    DROP TABLE user_count;
+    (COUNT(DISTINCT quest_session.no_pers) /
+    -- on créé une table contenant le nombre de personnes
+        (SELECT COUNT(*)
+        FROM personne)) AS pourcentage
+    FROM quest_session
+    -- on les regroupe par personne, pour éviter les doublons dû aux plusieurs sessions lancées
+    GROUP BY quest_session.no_pers
+    -- on choisi uniquement les utilisateurs ayant lancé 2 fois ou plus
+    HAVING COUNT(quest_session.no_quest) >= 2;
     ```
     #### compatible :
     ```sql
@@ -150,24 +145,19 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     #### conventionnelle :
     ```sql
-    -- on créé une table qui contient le nombre de réponses justes
-    CREATE TABLE correct_count AS
-    SELECT COUNT(*) AS c
+    SELECT
+    (COUNT(rep_proposee.etat_rep) /
+    -- on créé une table contenant le nombre de réponses données pour la question 2
+        (SELECT COUNT(*)
+        FROM rep_donnee
+        WHERE rep_donnee.no_question = 1)) AS pourcentage
     FROM rep_donnee
-    INNER JOIN rep_proposee ON rep_proposee.no_question = rep_donnee.no_question
-    AND rep_proposee.no_ordre = rep_donnee.no_ordre
+    INNER JOIN rep_proposee ON rep_proposee.no_ordre = rep_donnee.no_ordre
+    AND rep_proposee.no_question = rep_donnee.no_question
+    -- on prend uniquement les réponses justes
     WHERE rep_proposee.etat_rep = true
-    AND rep_donnee.no_question = 2;
-    -- on créé une table qui contient le nombre de réponses total
-    CREATE TABLE answer_count AS
-    SELECT COUNT(*) AS c
-    FROM rep_donnee
-    WHERE rep_donnee.no_question = 2;
-    -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
-    SELECT correct_count.c / answer_count.c AS pourcentage
-    FROM correct_count, answer_count;
-    DROP TABLE correct_count;
-    DROP TABLE answer_count;
+    -- et de la question 2
+    AND rep_proposee.no_question = 1;
     ```
     #### compatible :
     ```sql
