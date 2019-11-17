@@ -166,7 +166,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     SELECT COUNT(*) AS c
     FROM rep_donnee, rep_proposee
     WHERE rep_proposee.etat_rep = true
-    AND question.no_question = 2
+    AND rep_donnee.no_question = 2
     AND rep_proposee.no_question = rep_donnee.no_question
     AND rep_proposee.no_ordre = rep_donnee.no_ordre;
     -- on créé une table qui contient le nombre de réponses total
