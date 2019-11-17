@@ -150,14 +150,14 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- on créé une table contenant le nombre de réponses données pour la question 2
         (SELECT COUNT(*)
         FROM rep_donnee
-        WHERE rep_donnee.no_question = 1)) AS pourcentage
+        WHERE rep_donnee.no_question = 2)) AS pourcentage
     FROM rep_donnee
     INNER JOIN rep_proposee ON rep_proposee.no_ordre = rep_donnee.no_ordre
     AND rep_proposee.no_question = rep_donnee.no_question
     -- on prend uniquement les réponses justes
     WHERE rep_proposee.etat_rep = true
     -- et de la question 2
-    AND rep_proposee.no_question = 1;
+    AND rep_proposee.no_question = 2;
     ```
     #### compatible :
     ```sql
