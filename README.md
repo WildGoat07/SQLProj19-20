@@ -216,3 +216,18 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE question_instances_count;
     DROP TABLE answers_count;
     ```
+1. > *Quelles sont les questions auxquelles les utilisateurs n’ont jamais répondu lors de leurs différentes sessions ?*
+
+    #### conventionnelle :
+    ```sql
+    SELECT DISTINCT question.no_question AS id, question.libelle AS question
+    -- on prend toutes les question qui existent
+    FROM question
+    WHERE NOT question.no_question IN(
+    -- on vérifie qu'elles ne soient pas dans celles répondues
+        SELECT rep_donnee.no_question
+        FROM rep_donnee);
+    ```
+    #### compatible :
+    ```sql
+    ```
