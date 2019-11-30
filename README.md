@@ -218,7 +218,6 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```
 1. > *Quelles sont les questions auxquelles les utilisateurs n’ont jamais répondu lors de leurs différentes sessions ?*
 
-    #### conventionnelle :
     ```sql
     SELECT DISTINCT question.no_question AS id, question.libelle AS question
     -- on prend toutes les question qui existent
@@ -228,6 +227,4 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         SELECT rep_donnee.no_question
         FROM rep_donnee);
     ```
-    #### compatible :
-    ```sql
-    ```
+
