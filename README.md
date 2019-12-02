@@ -309,8 +309,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         -- on prend toutes les question qui existent
     FROM
         question
-    WHERE NOT
-        question.no_question IN(
+    WHERE
+        question.no_question NOT IN(
             -- on vérifie qu'elles ne soient pas dans celles répondues
         SELECT
             rep_donnee.no_question
