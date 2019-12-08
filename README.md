@@ -99,9 +99,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     SELECT
-        -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+        -- on renvoie le pourcentage (et on ne multiplie pas un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage)
         (
-            COUNT(DISTINCT quest_session.no_pers) /
+            COUNT(*) /
             -- on créé une table contenant le nombre de personnes
             (
         SELECT
@@ -111,13 +111,20 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         )
         ) AS pourcentage
     FROM
-        quest_session
-        -- on les regroupe par personne, pour éviter les doublons dû aux plusieurs sessions lancées
-    GROUP BY
-        quest_session.no_pers
-        -- on choisi uniquement les utilisateurs ayant lancé 2 fois ou plus
-    HAVING
-        COUNT(quest_session.no_quest) >= 2;
+        (
+        -- on créé une table contenant les uniques personnes ayant lancé plusieurs fois un même questionnaire
+        SELECT
+            DISTINCT quest_session.no_pers
+        FROM
+            quest_session
+            -- on les regroupe par personne, pour éviter les doublons dû aux plusieurs sessions lancées, puis par questionnaire
+        GROUP BY
+            quest_session.no_pers,
+            quest_session.no_quest
+            -- on choisi uniquement les utilisateurs ayant lancé 2 fois ou plus
+        HAVING
+            COUNT(quest_session.no_quest) >= 2
+    ) AS c;
     ```
     #### compatible :
     ```sql
@@ -129,13 +136,14 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         quest_session AS qs2
     WHERE
         qs1.no_pers = qs2.no_pers
-        AND qs1.no_quest <> qs2.no_quest;
+        AND qs1.no_session <> qs2.no_session
+        AND qs1.no_quest = qs2.no_quest;
         -- on crée une table qui contient une seule case (colonne 'c') qui indique le nombre total d'utilisateurs
     CREATE TABLE user_count AS SELECT
         COUNT(*) AS c
     FROM
         personne;
-        -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
+        -- on renvoie le pourcentage (et on ne multiplie pas un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage)
     SELECT
         quest_started.c / user_count.c AS pourcentage
     FROM
