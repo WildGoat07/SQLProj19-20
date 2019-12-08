@@ -202,6 +202,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```
 1. > *Quel est le pourcentage de réponses correctes à la question q2?*
 
+    > **Note sur le sens de la consigne :**
+    >
+    > On compte le nombre de réponses *données* par les utilisateurs et non celles *proposées* par le questionnaire, sinon il faudra simplifier la commande
+
     #### conventionnelle :
     ```sql
     SELECT
