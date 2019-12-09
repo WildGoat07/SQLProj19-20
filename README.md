@@ -438,3 +438,43 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         )
     ORDER BY q.no_question
     ```
+1. > *Quel pourcentage des questions ont une réponse juste proposée en 1e position ?*
+
+    #### conventionnelle :
+    ```sql
+    SELECT
+        COUNT(DISTINCT rep_proposee.no_question) /
+        (
+            -- on sélectionne toutes les questions
+            SELECT COUNT(question.no_question)
+            FROM
+                question
+        )
+    FROM
+        rep_proposee
+    WHERE
+        -- on sélectionne toutes les réponses répondant aux critères
+        rep_proposee.etat_rep = TRUE
+        AND rep_proposee.no_ordre = 0;
+    ```
+    #### compatible :
+    ```sql
+    CREATE TABLE r1 AS
+    SELECT q.no_question
+    FROM `question` AS q, `rep_proposee` AS rp
+    WHERE q.no_question=rp.no_question
+        AND rp.etat_rep="1"
+        AND rp.no_ordre="1"
+    ;
+    CREATE TABLE r2 AS
+    SELECT q.no_question
+    FROM `question` AS q
+    ;
+    SELECT (s1/s2) AS "Pourcentage des questions qui ont une réponse juste proposée en première position"
+    FROM `r1`, `r2`
+    ;
+    DROP TABLE r1
+    ;
+    DROP TABLE r2
+    ;
+    ```
