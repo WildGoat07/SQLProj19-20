@@ -387,7 +387,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur le sens de la consigne :**
     >
-    > On part du principe que la session 15 a été faite par COVER Harry. S'il faut exactement la 15ème session qu'il a joué, on peut bidouiller ça avec un `LIMIT 14,1` et un GROUP BY sur `quest_session.no_session` à mon avis
+    > On part du principe que la session 15 a été faite par COVER Harry. S'il faut exactement la 15ème session qu'il a joué, on peut bidouiller ça avec un `LIMIT 14,1` et un `GROUP BY` sur `quest_session.no_session` à mon avis
 
     #### conventionnelle :
     ```sql
