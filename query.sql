@@ -13,7 +13,7 @@ WHERE
 
 /* question 8 */
 CREATE TABLE r1 AS SELECT
-    COUNT(s.no_quest) AS s1
+    COUNT(DISTINCT s.no_quest) AS s1
 FROM
     `questionnaire` AS q,
     `quest_session` AS s,
@@ -23,7 +23,7 @@ WHERE
 CREATE TABLE r2 AS SELECT
     COUNT(no_quest) AS s2
 FROM
-    `questionnaire`;
+    `quest_session`;
 SELECT
     (s1 / s2) AS "Le pourcentage correspondant aux sessions de septembre 2019 portant sur le sport ou la bière"
 FROM
