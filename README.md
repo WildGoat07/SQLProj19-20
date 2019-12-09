@@ -10,7 +10,7 @@ ______________________________________________________________________________
 -->
 # Projet SQL 2019 - 2020
 
-Chaque requête est écrite de manière compatible (par rapport au cours et au design d'un arbre) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours (dans la limite de nos connaissances).
+Chaque requête est écrite de manière compatible (par rapport au cours et au design d'un arbre) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours (dans la limite de nos connaissances personnelles).
 
 ## requêtes :
 
@@ -65,8 +65,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         INNER JOIN se_compose USING(no_question, no_quest)
     WHERE
         quest_session.no_session = 12
-        AND personne.nom_pers = LOWER("HOCHET")
-        AND personne.prenom_pers = LOWER("Ric")
+        AND LOWER(personne.nom_pers) = LOWER("HOCHET")
+        AND LOWER(personne.prenom_pers) = LOWER("Ric")
         -- on mets 3 car l'ordre des question commence à 0 et non 1, comme tout bon langage de programmation
         AND se_compose.no_ordre = 3;
     ```
@@ -174,7 +174,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     NATURAL JOIN questionnaire
     NATURAL JOIN theme
     WHERE
-        theme.libelle_theme = "sport"
+        LOWER(theme.libelle_theme) = LOWER("sport")
         AND YEAR(quest_session.date_session) = 2018
     ORDER BY
         quest_session.date_session DESC,
@@ -197,7 +197,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         personne.no_pers = quest_session.no_pers
         AND questionnaire.no_quest = quest_session.no_quest
         AND theme.no_theme = questionnaire.no_theme
-        AND theme.libelle_theme = "sport"
+        AND theme.libelle_theme = "Sport"
         AND quest_session.date_session LIKE "2018-%"
     ORDER BY
         quest_session.date_session DESC,
@@ -333,5 +333,52 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         FROM
             rep_donnee
         );
+    ```
+1. > *Quel pourcentage des questionnaires correspondant aux sessions de septembre 2019 porte sur le sport ou la bière ?*
+
+    #### conventionnelle :
+    ```sql
+    SELECT
+        COUNT(DISTINCT questionnaire.no_quest) /
+        (
+            SELECT
+                COUNT(DISTINCT questionnaire.no_quest)
+            FROM
+                questionnaire
+                NATURAL JOIN quest_session
+            WHERE
+                YEAR(quest_session.date_session) = 2019
+                AND MONTH(quest_session.date_session) = 9
+        ) AS pourcentage
+    FROM
+        questionnaire
+        NATURAL JOIN quest_session
+        NATURAL JOIN theme
+    WHERE
+        YEAR(quest_session.date_session) = 2019
+        AND MONTH(quest_session.date_session) = 9
+        AND
+        (
+            LOWER(theme.libelle_theme) = LOWER("Sport")
+            OR LOWER(theme.libelle_theme) = LOWER("Bière")
+        )
+    ```
+    #### compatible :
+    ```sql
+    CREATE TABLE r1 AS
+        SELECT s.no_quest AS s1
+        FROM `questionnaire` AS q, `quest_session` AS s, `theme` AS t
+        WHERE q.no_quest=s.no_quest
+            AND q.no_theme=t.no_theme
+            AND t.libelle_theme="Sport"
+            OR t.libelle_theme="Bière"
+            AND s.date_session LIKE "2019-09-%";
+    CREATE TABLE r2 AS
+        SELECT no_quest AS s2
+        FROM `questionnaire`;
+    SELECT (s1/s2) AS "Le pourcentage correspondant aux sessions de septembre 2019 portant sur le sport ou la bière"
+    FROM `r1`, `r2`;
+    DROP TABLE r1;
+    DROP TABLE r2;
     ```
 
