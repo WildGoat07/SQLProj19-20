@@ -339,9 +339,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     #### conventionnelle :
     ```sql
     SELECT
+        -- on compte le nombre de questionnaires différents sur le sport / la bière de septembre 2019
         COUNT(DISTINCT questionnaire.no_quest) /
         (
             SELECT
+                -- on compte le nombre de questionnaires différents de septembre 2019
                 COUNT(DISTINCT questionnaire.no_quest)
             FROM
                 questionnaire
@@ -361,7 +363,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         (
             LOWER(theme.libelle_theme) = LOWER("Sport")
             OR LOWER(theme.libelle_theme) = LOWER("Bière")
-        )
+        );
     ```
     #### compatible :
     ```sql
@@ -381,4 +383,58 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE r1;
     DROP TABLE r2;
     ```
+1. > *Quelles sont les questions (classées par numéro) auxquelles n’a pas répondu COVER Harry lors de sa session 15 ?*
 
+    > **Note sur le sens de la consigne :**
+    >
+    > On part du principe que la session 15 a été faite par COVER Harry. S'il faut exactement la 15ème session qu'il a joué, on peut bidouiller ça avec un `LIMIT 14,1` et un GROUP BY sur `quest_session.no_session` à mon avis
+
+    #### conventionnelle :
+    ```sql
+    SELECT
+        -- on récupère ce qui défini une question et son ordre dans le questionnaire
+        se_compose.no_ordre AS "n° question",
+        question.libelle AS "question"
+    FROM
+        -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry
+        questionnaire
+        NATURAL JOIN quest_session
+        NATURAL JOIN personne
+        NATURAL JOIN se_compose
+        NATURAL JOIN question
+    WHERE
+        quest_session.no_session = 15
+        AND LOWER(personne.nom_pers) = LOWER("COVER")
+        AND LOWER(personne.prenom_pers) = LOWER("Harry")
+        AND question.no_question NOT IN
+        (
+            SELECT
+                    -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry auquelles il a répondu
+                    rep_donnee.no_question
+            FROM
+                personne
+                NATURAL JOIN quest_session
+                NATURAL JOIN se_compose
+                INNER JOIN rep_donnee USING(no_question)
+            WHERE
+                quest_session.no_session = 15
+                AND LOWER(personne.nom_pers) = LOWER("COVER")
+                AND LOWER(personne.prenom_pers) = LOWER("Harry")
+        )
+    ORDER BY se_compose.no_ordre;
+    ```
+    #### compatible :
+    ```sql
+    SELECT q.no_question AS "Les questions auxquelles COVER Harry n'a pas répondu lors de sa session 15"
+    FROM `question` AS q
+    WHERE q.no_question NOT IN(
+        SELECT rd.no_question
+        FROM `rep_donnee` AS rd, `quest_session` AS s, `personne` AS p
+        WHERE s.no_session=rd.no_session
+            AND s.no_pers=p.no_pers
+            AND s.no_session="15"
+            AND p.nom_pers="cover"
+            AND p.prenom_pers="harry"
+        )
+    ORDER BY q.no_question
+    ```
