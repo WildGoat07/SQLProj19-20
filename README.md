@@ -23,9 +23,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         rep_proposee.lib_reponse AS reponse
     FROM
         rep_proposee
-    INNER JOIN question ON rep_proposee.no_question = question.no_question
+        NATURAL JOIN question
     WHERE
-        rep_proposee.etat_rep = TRUE AND question.no_question = 3;
+        rep_proposee.etat_rep = TRUE
+        AND question.no_question = 3;
     ```
     #### compatible :
     ```sql
@@ -36,7 +37,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         rep_proposee,
         question
     WHERE
-        rep_proposee.etat_rep = TRUE AND question.no_question = 3 AND rep_proposee.no_question = question.no_question;
+        rep_proposee.etat_rep = TRUE
+        AND question.no_question = 3
+        AND rep_proposee.no_question = question.no_question;
     ```
 1. > *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
@@ -54,11 +57,12 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     END AS etat
     FROM
         rep_proposee
-    INNER JOIN question ON question.no_question = rep_proposee.no_question
-    INNER JOIN rep_donnee ON rep_donnee.no_question = question.no_question AND rep_proposee.no_ordre = rep_donnee.no_ordre
-    INNER JOIN quest_session ON rep_donnee.no_session = quest_session.no_session
-    INNER JOIN personne ON quest_session.no_pers = personne.no_pers
-    INNER JOIN se_compose ON se_compose.no_question = rep_proposee.no_question AND se_compose.no_quest = quest_session.no_quest
+        NATURAL JOIN question
+        NATURAL JOIN rep_donnee
+        NATURAL JOIN quest_session
+        NATURAL JOIN personne
+        -- on mets un INNER JOIN car no_ordre est déjà présent dans la table actuelle, mais ne désigne pas la même chose
+        INNER JOIN se_compose USING(no_question, no_quest)
     WHERE
         quest_session.no_session = 12
         AND personne.nom_pers = LOWER("HOCHET")
@@ -166,9 +170,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         quest_session.date_session AS "date"
     FROM
         personne
-    INNER JOIN quest_session ON quest_session.no_pers = personne.no_pers
-    INNER JOIN questionnaire ON quest_session.no_quest = questionnaire.no_quest
-    INNER JOIN theme ON questionnaire.no_theme = theme.no_theme
+    NATURAL JOIN quest_session
+    NATURAL JOIN questionnaire
+    NATURAL JOIN theme
     WHERE
         theme.libelle_theme = "sport"
         AND YEAR(quest_session.date_session) = 2018
@@ -223,7 +227,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         ) AS pourcentage
     FROM
         rep_donnee
-    INNER JOIN rep_proposee ON rep_proposee.no_ordre = rep_donnee.no_ordre AND rep_proposee.no_question = rep_donnee.no_question
+    NATURAL JOIN rep_proposee
     WHERE
         -- on prend uniquement les réponses justes
         rep_proposee.etat_rep = TRUE
@@ -274,7 +278,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         ) AS pourcentage
     FROM
         quest_session
-    LEFT JOIN rep_donnee ON rep_donnee.no_session = quest_session.no_session
+    NATURAL LEFT JOIN rep_donnee
         -- dans cet exemple : uniquement compatible avec MySQL, utiliser :
         -- ISNULL(rep_donnee.no_question, 2) avec SQL Server,
         -- IIF(IsNull(rep_donnee.no_question), 2, rep_donnee.no_question) avec MS Access
