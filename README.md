@@ -336,9 +336,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```
 1. > *Quel pourcentage des questionnaires correspondant aux sessions de septembre 2019 portent sur le sport ou la bière ?*
 
-    > **Note sur le sens de la consigne :**
+    > **Note sur la réponse :**
     >
-    > j'ai pas trouvé de moyen pour retirer les diacritiques (pour "Bi**è**re"), donc on fait avec ¯\\\_(ツ)\_/¯. On peut utiliser [cette fonction](https://gist.github.com/jgdoncel/bc20b39b8cd612c4a26dfcaf3bb14dd8) mais là ça deviens overkill
+    > J'ai pas trouvé de moyen pour retirer les diacritiques (pour "Bi**è**re"), donc on fait avec ¯\\\_(ツ)\_/¯. On peut utiliser [cette fonction](https://gist.github.com/jgdoncel/bc20b39b8cd612c4a26dfcaf3bb14dd8) mais là ça deviens overkill
 
     #### conventionnelle :
     ```sql
