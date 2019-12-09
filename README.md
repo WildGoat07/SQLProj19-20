@@ -334,7 +334,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
             rep_donnee
         );
     ```
-1. > *Quel pourcentage des questionnaires correspondant aux sessions de septembre 2019 porte sur le sport ou la bière ?*
+1. > *Quel pourcentage des questionnaires correspondant aux sessions de septembre 2019 portent sur le sport ou la bière ?*
 
     #### conventionnelle :
     ```sql
