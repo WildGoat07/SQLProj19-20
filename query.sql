@@ -56,26 +56,26 @@ ORDER BY
     q.no_question;
 
     /* question 10 */
-CREATE TABLE r1 AS SELECT
-    q.no_question
+CREATE TABLE r3 AS SELECT
+    COUNT(q.no_question) AS s3
 FROM
     `question` AS q,
     `rep_proposee` AS rp
 WHERE
     q.no_question = rp.no_question AND rp.etat_rep = "1" AND rp.no_ordre = "1";
-CREATE TABLE r2 AS SELECT
-    q.no_question
+CREATE TABLE r4 AS SELECT
+    COUNT(q.no_question) AS s4
 FROM
     `question` AS q;
 SELECT
-    (s1 / s2) AS "Pourcentage des questions qui ont une réponse juste proposée en première position"
+    (s3 / s4) AS "Pourcentage des questions qui ont une réponse juste proposée en première position"
 FROM
-    `r1`,
-    `r2`;
+    `r3`,
+    `r4`;
 DROP TABLE
-    r1;
+    r3;
 DROP TABLE
-    r2;
+    r4;
 
     /* question 11 */
 SELECT
