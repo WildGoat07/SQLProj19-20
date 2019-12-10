@@ -20,7 +20,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- simple jonction entre deux tables
     SELECT
-        rep_proposee.lib_reponse AS reponse
+        rep_proposee.lib_reponse AS "réponse"
     FROM
         rep_proposee
         NATURAL JOIN question
@@ -32,7 +32,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ```sql
     -- simple jonction entre deux tables
     SELECT
-        rep_proposee.lib_reponse AS reponse
+        rep_proposee.lib_reponse AS "réponse"
     FROM
         rep_proposee,
         question
@@ -41,6 +41,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         AND question.no_question = 3
         AND rep_proposee.no_question = question.no_question;
     ```
+    #### tableau possible :
+    |réponse|
+    |-|
+    |Ireland|
+    |France|
 1. > *La réponse donnée par Ric HOCHET à la question 4 lors de la session 12 est-elle juste ou fausse ?*
 
     > **Note sur le sens de la consigne :**
@@ -52,9 +57,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- jonctions multiples et des conditions
     SELECT
         question.libelle AS question,
-        rep_proposee.lib_reponse AS reponse,
+        rep_proposee.lib_reponse AS "réponse",
         CASE WHEN rep_proposee.etat_rep = TRUE THEN "vrai" ELSE "faux"
-    END AS etat
+    END AS "état"
     FROM
         rep_proposee
         NATURAL JOIN question
@@ -75,8 +80,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- jonctions multiples et des conditions
     SELECT
         question.libelle AS question,
-        rep_proposee.lib_reponse AS reponse,
-        rep_proposee.etat_rep AS etat
+        rep_proposee.lib_reponse AS "réponse",
+        rep_proposee.etat_rep AS "état"
     FROM
         rep_proposee,
         question,
@@ -98,6 +103,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         AND se_compose.no_quest = quest_session.no_quest
         AND se_compose.no_question = question.no_question;
     ```
+    #### tableau possible :
+    |question|réponse|état|
+    |-|-|-|
+    |Qui est l'hôte des Jeux olympiques de 2024?|Angleterre|faux|
 1. > *Quel pourcentage des utilisateurs ont tenté plusieurs fois le même questionnaire ?*
 
     #### conventionnelle :
@@ -159,6 +168,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE
         user_count;
     ```
+    #### tableau possible :
+    |pourcentage|
+    |-:|
+    |0.2000|
 1. > *Donner, classées par date de session décroissante et par ordre alphabétique, les personnes qui ont répondu en 2018 à des questionnaires sur le sport*
 
     #### conventionnelle :
@@ -166,14 +179,15 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- jointures et tri
     SELECT
         personne.nom_pers AS nom,
-        personne.prenom_pers AS prenom,
+        personne.prenom_pers AS "prénom",
         quest_session.date_session AS "date"
     FROM
         personne
-    NATURAL JOIN quest_session
-    NATURAL JOIN questionnaire
-    NATURAL JOIN theme
+        NATURAL JOIN quest_session
+        NATURAL JOIN questionnaire
+        NATURAL JOIN theme
     WHERE
+        -- On mets LOWER("sport") car il y aura parfois des majuscules dans les recherches, au cas où
         LOWER(theme.libelle_theme) = LOWER("sport")
         AND YEAR(quest_session.date_session) = 2018
     ORDER BY
@@ -186,7 +200,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     -- jointures et tri
     SELECT
         personne.nom_pers AS nom,
-        personne.prenom_pers AS prenom,
+        personne.prenom_pers AS "prénom",
         quest_session.date_session AS "date"
     FROM
         personne,
@@ -204,6 +218,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         personne.nom_pers,
         personne.prenom_pers;
     ```
+    #### tableau possible :
+    |nom|prénom|date|
+    |-|-|-|
+    |windforce|janna|2018-05-12|
+    |lito|irelia|2018-02-26|
 1. > *Quel est le pourcentage de réponses correctes à la question q2?*
 
     > **Note sur le sens de la consigne :**
@@ -254,7 +273,6 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         rep_donnee
     WHERE
         rep_donnee.no_question = 2;
-        -- on renvoie le pourcentage (et on ne multiplie PAS un pourcentage par 100, c’est au programme/site appelant de le faire pour le formattage !!!)
     SELECT
         correct_count.c / answer_count.c AS pourcentage
     FROM
@@ -265,6 +283,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE
         answer_count;
     ```
+    #### tableau possible :
+    |pourcentage|
+    |-:|
+    |0.8000|
 1. > *Quel est le pourcentage de non-réponses à la question q2?*
 
     #### conventionnelle :
@@ -316,6 +338,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE
         answers_count;
     ```
+    #### tableau possible :
+    |pourcentage|
+    |-:|
+    |0.5000|
 1. > *Quelles sont les questions auxquelles les utilisateurs n’ont jamais répondu lors de leurs différentes sessions ?*
 
     ```sql
@@ -326,14 +352,23 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     FROM
         question
     WHERE
-        question.no_question NOT IN(
-            -- on vérifie qu'elles ne soient pas dans celles répondues
-        SELECT
-            rep_donnee.no_question
-        FROM
-            rep_donnee
+        question.no_question NOT IN
+        (
+                -- on vérifie qu'elles ne soient pas dans celles répondues
+            SELECT
+                rep_donnee.no_question
+            FROM
+                rep_donnee
         );
     ```
+    #### tableau possible :
+    |id|question|
+    |-:|-|
+    |1|Quelle équipe a gagné le World 2015 ?|
+    |3|Combien d'armes possède Aphelios?|
+    |8|Quelle est la bière préférée de monsieur Heulluy?|
+    |21|Combien de pays y a-t-il dans l'Union Européenne?|
+    |24|Quel est le nom complet de l'UNESCO?|
 1. > *Quel pourcentage des questionnaires correspondant aux sessions de septembre 2019 portent sur le sport ou la bière ?*
 
     > **Note sur la réponse :**
@@ -370,23 +405,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         );
     ```
     #### compatible :
-    ```sql
-    CREATE TABLE r1 AS
-        SELECT s.no_quest AS s1
-        FROM `questionnaire` AS q, `quest_session` AS s, `theme` AS t
-        WHERE q.no_quest=s.no_quest
-            AND q.no_theme=t.no_theme
-            AND t.libelle_theme="Sport"
-            OR t.libelle_theme="Bière"
-            AND s.date_session LIKE "2019-09-%";
-    CREATE TABLE r2 AS
-        SELECT no_quest AS s2
-        FROM `questionnaire`;
-    SELECT (s1/s2) AS "Le pourcentage correspondant aux sessions de septembre 2019 portant sur le sport ou la bière"
-    FROM `r1`, `r2`;
-    DROP TABLE r1;
-    DROP TABLE r2;
-    ```
+    #### tableau possible :
+    |pourcentage|
+    |-:|
+    |0.6667|
 1. > *Quelles sont les questions (classées par numéro) auxquelles n’a pas répondu COVER Harry lors de sa session 15 ?*
 
     > **Note sur le sens de la consigne :**
@@ -427,20 +449,6 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     ORDER BY se_compose.no_ordre;
     ```
     #### compatible :
-    ```sql
-    SELECT q.no_question AS "Les questions auxquelles COVER Harry n'a pas répondu lors de sa session 15"
-    FROM `question` AS q
-    WHERE q.no_question NOT IN(
-        SELECT rd.no_question
-        FROM `rep_donnee` AS rd, `quest_session` AS s, `personne` AS p
-        WHERE s.no_session=rd.no_session
-            AND s.no_pers=p.no_pers
-            AND s.no_session="15"
-            AND p.nom_pers="cover"
-            AND p.prenom_pers="harry"
-        )
-    ORDER BY q.no_question
-    ```
     #### alternative (15ème session de Harry) :
     ```sql
     SELECT
@@ -498,6 +506,11 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         )
     ORDER BY se_compose.no_ordre;
     ```
+    #### tableau possible :
+    |n° question|question|
+    |-:|-|
+    |0|Quelle bière vient du Cambodge?|
+    |3|Parmi ces options, laquelle n'est pas une bière?|
 1. > *Quel pourcentage des questions ont une réponse juste proposée en 1e position ?*
 
     #### conventionnelle :
@@ -508,8 +521,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
             -- on sélectionne toutes les questions
             SELECT COUNT(question.no_question)
             FROM
-                question
-        )
+               question
+        ) AS pourcentage
     FROM
         rep_proposee
     WHERE
@@ -518,26 +531,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         AND rep_proposee.no_ordre = 0;
     ```
     #### compatible :
-    ```sql
-    CREATE TABLE r1 AS
-    SELECT q.no_question
-    FROM `question` AS q, `rep_proposee` AS rp
-    WHERE q.no_question=rp.no_question
-        AND rp.etat_rep="1"
-        AND rp.no_ordre="1"
-    ;
-    CREATE TABLE r2 AS
-    SELECT q.no_question
-    FROM `question` AS q
-    ;
-    SELECT (s1/s2) AS "Pourcentage des questions qui ont une réponse juste proposée en première position"
-    FROM `r1`, `r2`
-    ;
-    DROP TABLE r1
-    ;
-    DROP TABLE r2
-    ;
-    ```
+    #### tableau possible :
+    |pourcentage|
+    |-:|
+    |0.4000|
 1. > *Vérification de la cohérence : quelles réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions ?*
 
     #### conventionnelle :
@@ -547,7 +544,8 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         personne.nom_pers AS "nom",
         personne.prenom_pers AS "prénom",
         rep_donnee.no_question AS "n° question",
-        question.libelle AS "question"
+        question.libelle AS "question",
+        rep_donnee.no_ordre AS "n° réponse"
     FROM
         quest_session
         NATURAL JOIN personne
@@ -560,14 +558,10 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         rep_donnee.no_ordre >= questionnaire.max;
     ```
     #### compatible :
-    ```sql
-    SELECT rp.no_question AS
-    "Les réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions"
-    FROM `rep_proposee` AS rp, `rep_donnee` AS rd
-    WHERE rd.no_question<>rp.no_question
-        AND rd.no_question=rp.no_question
-    ;
-    ```
+    #### tableau possible :
+    |n° session|nom|prénom|n° question|question|n° réponse|
+    |-:|-|-|-:|-|-:|
+    |7|hastur|annie|11|Combien de sports sont représentés aux Jeux olympiques de 2020?|4|
 1. > *Vérification de la cohérence : existe-t-il des questions ne comportant aucune bonne réponse ?*
 
     ```sql
@@ -586,6 +580,9 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
                 rep_proposee
             WHERE
                 rep_proposee.etat_rep = TRUE
-        )
-    ;
+        );
     ```
+    #### tableau possible :
+    |n° question|question|
+    |-:|-|
+    |19|Que signifie commander un verre "On the rocks"?|
