@@ -36,13 +36,14 @@ DROP TABLE
 
     /* question 9 */
 SELECT
-    q.no_question AS "Les questions auxquelles COVER Harry n'a pas répondu lors de sa session 15"
+    q.no_question,
+    q.libelle AS "Les questions auxquelles COVER Harry n'a pas répondu lors de sa session 15"
 FROM
-    `question` AS q,
     `quest_session` AS s,
-    `se_compose` AS sc
+    `se_compose` AS sc,
+    `question` AS q
 WHERE
-    q.no_question AND q.no_question = sc.no_question AND sc.no_quest = s.no_quest AND s.no_session = "15" NOT IN(
+    q.no_question = sc.no_question AND sc.no_quest = s.no_quest AND s.no_session = "15" AND q.no_question NOT IN(
     SELECT
         rd.no_question
     FROM
@@ -50,7 +51,7 @@ WHERE
         `quest_session` AS s,
         `personne` AS p
     WHERE
-        s.no_session = rd.no_session AND s.no_pers = p.no_pers AND s.no_session = "15" AND p.nom_pers = "cover" AND p.prenom_pers = "harry"
+        s.no_session = "15" AND s.no_session = rd.no_session AND s.no_pers = p.no_pers AND s.no_session = "15" AND p.nom_pers = "cover" AND p.prenom_pers = "harry"
 )
 ORDER BY
     q.no_question;
@@ -66,7 +67,7 @@ WHERE
 CREATE TABLE r4 AS SELECT
     COUNT(q.no_question) AS s4
 FROM
-    `question` AS q;
+    `question` AS q,
 SELECT
     (s3 / s4) AS "Pourcentage des questions qui ont une réponse juste proposée en première position"
 FROM
@@ -79,12 +80,21 @@ DROP TABLE
 
     /* question 11 */
 SELECT
-    rp.no_question AS "Les réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions"
+    rd.no_question,
+    q.libelle AS "Les réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions"
 FROM
-    `rep_proposee` AS rp,
-    `rep_donnee` AS rd
+    `rep_donnee` AS rd,
+    `question` AS q
 WHERE
-    rd.no_question <> rp.no_question AND rd.no_question = rp.no_question;
+    rd.no_question = q.no_question AND rd.no_question NOT IN(
+    SELECT
+        rd.no_question
+    FROM
+        `rep_proposee` AS rp,
+        `rep_donnee` AS rd
+    WHERE
+        rd.no_question = rp.no_question AND rd.no_ordre = rp.no_ordre
+);
 
     /* question 12 */
 SELECT
