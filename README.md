@@ -391,7 +391,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur le sens de la consigne :**
     >
-    > On part du principe que la session 15 a été faite par COVER Harry. S'il faut exactement la 15ème session qu'il a joué, on peut bidouiller ça avec un `LIMIT 14,1` et un `GROUP BY` sur `quest_session.no_session` à mon avis
+    > On part du principe que la session 15 a été faite par COVER Harry. S'il faut exactement la 15ème session qu'il a joué, voir la troisième requête.
 
     #### conventionnelle :
     ```sql
@@ -401,8 +401,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         question.libelle AS "question"
     FROM
         -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry
-        questionnaire
-        NATURAL JOIN quest_session
+        quest_session
         NATURAL JOIN personne
         NATURAL JOIN se_compose
         NATURAL JOIN question
@@ -413,13 +412,13 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         AND question.no_question NOT IN
         (
             SELECT
-                    -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry auquelles il a répondu
+                    -- on récupère toutes les questions du questionnaire de la session voulue par COVER Harry auxquelles il a répondu
                     rep_donnee.no_question
             FROM
                 personne
                 NATURAL JOIN quest_session
                 NATURAL JOIN se_compose
-                INNER JOIN rep_donnee USING(no_question)
+                INNER JOIN rep_donnee USING(no_question, no_session)
             WHERE
                 quest_session.no_session = 15
                 AND LOWER(personne.nom_pers) = LOWER("COVER")
@@ -441,6 +440,63 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
             AND p.prenom_pers="harry"
         )
     ORDER BY q.no_question
+    ```
+    #### alternative (15ème session de Harry) :
+    ```sql
+    SELECT
+        -- on récupère ce qui défini une question et son ordre dans le questionnaire
+        se_compose.no_ordre AS "n° question",
+        question.libelle AS "question"
+    FROM
+        -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry
+        quest_session
+        NATURAL JOIN personne
+        NATURAL JOIN se_compose
+        NATURAL JOIN question
+    WHERE
+        quest_session.no_session =
+        (
+            -- on prend ici uniquement l'identifiant de la 15ème session (LIMIT)
+            SELECT
+            	quest_session.no_session
+            FROM
+            	quest_session
+            	NATURAL JOIN personne
+            WHERE
+            	LOWER(personne.nom_pers) = LOWER("COVER")
+                AND LOWER(personne.prenom_pers) = LOWER("Harry")
+            LIMIT 14,1
+        )
+        AND LOWER(personne.nom_pers) = LOWER("COVER")
+        AND LOWER(personne.prenom_pers) = LOWER("Harry")
+        AND question.no_question NOT IN
+        (
+            SELECT
+                    -- on récupère toutes les questions du questionnaire de la session voulue par COVER Harry auxquelles il a répondu
+                    rep_donnee.no_question
+            FROM
+                personne
+                NATURAL JOIN quest_session
+                NATURAL JOIN se_compose
+                INNER JOIN rep_donnee USING(no_question, no_session)
+            WHERE
+                quest_session.no_session =
+            	(
+                    -- on prend ici uniquement l'identifiant de la 15ème session (LIMIT)
+                    SELECT
+                        quest_session.no_session
+                    FROM
+                        quest_session
+                        NATURAL JOIN personne
+                    WHERE
+                        LOWER(personne.nom_pers) = LOWER("COVER")
+                        AND LOWER(personne.prenom_pers) = LOWER("Harry")
+                    LIMIT 14,1
+        		)
+                AND LOWER(personne.nom_pers) = LOWER("COVER")
+                AND LOWER(personne.prenom_pers) = LOWER("Harry")
+        )
+    ORDER BY se_compose.no_ordre;
     ```
 1. > *Quel pourcentage des questions ont une réponse juste proposée en 1e position ?*
 
