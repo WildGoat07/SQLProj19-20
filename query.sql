@@ -63,7 +63,7 @@ FROM
     `question` AS q,
     `rep_proposee` AS rp
 WHERE
-    q.no_question = rp.no_question AND rp.etat_rep = "1" AND rp.no_ordre = "1";
+    q.no_question = rp.no_question AND rp.etat_rep = "1" AND rp.no_ordre = "0";
 CREATE TABLE r4 AS SELECT
     COUNT(q.no_question) AS s4
 FROM
@@ -84,17 +84,11 @@ SELECT
     q.libelle AS "Les réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions"
 FROM
     `rep_donnee` AS rd,
-    `question` AS q
+    `question` AS q,
+    `quest_session` AS s,
+    `questionnaire` AS qq
 WHERE
-    rd.no_question = q.no_question AND rd.no_question NOT IN(
-    SELECT
-        rd.no_question
-    FROM
-        `rep_proposee` AS rp,
-        `rep_donnee` AS rd
-    WHERE
-        rd.no_question = rp.no_question AND rd.no_ordre = rp.no_ordre
-);
+    s.no_session = rd.no_session AND s.no_quest = qq.no_quest AND rd.no_question = q.no_question AND rd.no_ordre >= qq.max;
 
     /* question 12 */
 SELECT
