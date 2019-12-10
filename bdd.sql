@@ -2,8 +2,6 @@
 -- version OVH
 -- https://www.phpmyadmin.net/
 --
--- Hôte : wildgoatqwsql.mysql.db
--- Généré le :  mar. 10 déc. 2019 à 17:34
 -- Version du serveur :  5.6.43-log
 -- Version de PHP :  7.2.19
 
@@ -19,7 +17,6 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de données :  `wildgoatqwsql`
 --
 
 -- --------------------------------------------------------

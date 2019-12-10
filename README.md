@@ -12,6 +12,8 @@ ______________________________________________________________________________
 
 Chaque requête est écrite de manière compatible (par rapport au cours et au design d'un arbre) et d'une manière plus conventionnelle (optimisation, lisibilité) mais utilise des élements non vus en cours (dans la limite de nos connaissances personnelles).
 
+La base de donnée et le jeu d'essai utilisé sont disponibles [ici](https://github.com/WildGoat07/SQLProj19-20/blob/master/bdd.sql).
+
 ## requêtes :
 
 1. > *Quelle(s) est (sont) la (les) bonne(s) réponse(s) à la question q3?*
