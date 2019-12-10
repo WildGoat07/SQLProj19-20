@@ -45,7 +45,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur le sens de la consigne :**
     >
-    > La "question 4" fait référence à la quatrième question du questionnaire, et la "session 12" correspond à son identifiant (qui peut ne pas provenir de Ric HOCHET, auquel cas rien n'est présent dans la table sélectionnée)
+    > La "question 4" fait référence à la quatrième question du questionnaire, et la "session 12" correspond à son identifiant (qui peut ne pas provenir de Ric HOCHET, auquel cas rien n'est présent dans la table sélectionnée).
     
     #### conventionnelle :
     ```sql
@@ -208,7 +208,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur le sens de la consigne :**
     >
-    > On compte le nombre de réponses *données* par les utilisateurs et non celles *proposées* par le questionnaire, sinon il faudra simplifier la commande
+    > On compte le nombre de réponses *données* par les utilisateurs et non celles *proposées* par le questionnaire, sinon il faudra simplifier la commande.
 
     #### conventionnelle :
     ```sql
@@ -338,7 +338,7 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
 
     > **Note sur la réponse :**
     >
-    > J'ai pas trouvé de moyen pour retirer les diacritiques (pour "Bi**è**re"), donc on fait avec ¯\\\_(ツ)\_/¯. On peut utiliser [cette fonction](https://gist.github.com/jgdoncel/bc20b39b8cd612c4a26dfcaf3bb14dd8) mais là ça deviens overkill
+    > J'ai pas trouvé de moyen pour retirer les diacritiques (pour "Bi**è**re"), donc on fait avec ¯\\\_(ツ)\_/¯. On peut utiliser [cette fonction](https://gist.github.com/jgdoncel/bc20b39b8cd612c4a26dfcaf3bb14dd8) mais là ça deviens overkill.
 
     #### conventionnelle :
     ```sql
@@ -536,5 +536,35 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
     DROP TABLE r1
     ;
     DROP TABLE r2
+    ;
+    ```
+1. > *Vérification de la cohérence : quelles réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions ?*
+
+    #### conventionnelle :
+    ```sql
+    SELECT
+        quest_session.no_session AS "n° session",
+        personne.nom_pers AS "nom",
+        personne.prenom_pers AS "prénom",
+        rep_donnee.no_question AS "n° question",
+        question.libelle AS "question"
+    FROM
+        quest_session
+        NATURAL JOIN personne
+        NATURAL JOIN rep_donnee
+        NATURAL JOIN question
+        NATURAL JOIN questionnaire
+    WHERE
+        -- max donnant la difficulté (le nombre de réponses possibles), on vérifie simplement que la réponse est dedans.
+        -- Cela par du coup du fait que toutes les question d'un questionnaire respectent la difficulté en terme de réponses
+        rep_donnee.no_ordre >= questionnaire.max;
+    ```
+    #### compatible :
+    ```sql
+    SELECT rp.no_question AS
+    "Les réponses enregistrées pour un utilisateur ne correspondent pas à une des propositions"
+    FROM `rep_proposee` AS rp, `rep_donnee` AS rd
+    WHERE rd.no_question<>rp.no_question
+        AND rd.no_question=rp.no_question
     ;
     ```
