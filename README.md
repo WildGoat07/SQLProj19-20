@@ -568,3 +568,24 @@ Chaque requête est écrite de manière compatible (par rapport au cours et au d
         AND rd.no_question=rp.no_question
     ;
     ```
+1. > *Vérification de la cohérence : existe-t-il des questions ne comportant aucune bonne réponse ?*
+
+    ```sql
+    SELECT
+        question.no_question AS "n° question",
+        question.libelle AS "question"
+    FROM
+        question
+    WHERE
+        question.no_question NOT IN
+        (
+            -- on prend toutes les questions possédant une réponse
+            SELECT DISTINCT
+                rep_proposee.no_question
+            FROM
+                rep_proposee
+            WHERE
+                rep_proposee.etat_rep = TRUE
+        )
+    ;
+    ```
