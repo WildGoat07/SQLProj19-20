@@ -6,7 +6,7 @@ ______________________________________________________________________________
 Un aperçu du markdown est disponible à cette adresse :
 https://github.com/WildGoat07/SQLProj19-20/blob/master/README.md
 
-______________________________________________________________________________
+__________________________;____________________________________________________
 -->
 # Projet SQL 2019 - 2020
 
@@ -460,7 +460,6 @@ La base de donnée et le jeu d'essai utilisé sont disponibles [ici](https://git
     FROM
         -- on récupère toutes les questions du questionnaire de la session en question par COVER Harry
         quest_session
-        NATURAL JOIN personne
         NATURAL JOIN se_compose
         NATURAL JOIN question
     WHERE
@@ -477,16 +476,13 @@ La base de donnée et le jeu d'essai utilisé sont disponibles [ici](https://git
                 AND LOWER(personne.prenom_pers) = LOWER("Harry")
             LIMIT 14,1
         )
-        AND LOWER(personne.nom_pers) = LOWER("COVER")
-        AND LOWER(personne.prenom_pers) = LOWER("Harry")
         AND question.no_question NOT IN
         (
             SELECT
                     -- on récupère toutes les questions du questionnaire de la session voulue par COVER Harry auxquelles il a répondu
                     rep_donnee.no_question
             FROM
-                personne
-                NATURAL JOIN quest_session
+                quest_session
                 NATURAL JOIN se_compose
                 INNER JOIN rep_donnee USING(no_question, no_session)
             WHERE
@@ -503,8 +499,6 @@ La base de donnée et le jeu d'essai utilisé sont disponibles [ici](https://git
                         AND LOWER(personne.prenom_pers) = LOWER("Harry")
                     LIMIT 14,1
         		)
-                AND LOWER(personne.nom_pers) = LOWER("COVER")
-                AND LOWER(personne.prenom_pers) = LOWER("Harry")
         )
     ORDER BY se_compose.no_ordre;
     ```
