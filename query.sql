@@ -19,7 +19,7 @@ FROM
     `quest_session` AS s,
     `theme` AS t
 WHERE
-    q.no_quest = s.no_quest AND q.no_theme = t.no_theme AND t.libelle_theme = "Sport" OR t.libelle_theme = "Bière" AND s.date_session LIKE "2019-09-%";
+    q.no_quest = s.no_quest AND q.no_theme = t.no_theme AND (t.libelle_theme = "Sport" OR t.libelle_theme = "Bière") AND s.date_session LIKE "2019-09-%";
 CREATE TABLE r2 AS SELECT
     COUNT(no_quest) AS s2
 FROM
